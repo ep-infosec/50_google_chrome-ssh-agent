@@ -1,0 +1,41 @@
+load("@rules_pkg//pkg:mappings.bzl", "pkg_filegroup", "pkg_files")
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+load("//build_defs:wasm.bzl", "go_wasm_binary")
+
+go_library(
+    name = "options_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/google/chrome-ssh-agent/go/options",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//go/app",
+        "//go/dom",
+        "//go/jsutil",
+        "//go/keys",
+        "//go/message",
+        "//go/optionsui",
+        "//go/testing",
+    ],
+)
+
+go_wasm_binary(
+    name = "options",
+    embed = [":options_lib"],
+    visibility = ["//visibility:private"],
+)
+
+pkg_files(
+    name = "pkg_files",
+    srcs = [
+        ":options",
+    ],
+)
+
+pkg_filegroup(
+    name = "pkg",
+    srcs = [
+        ":pkg_files",
+    ],
+    prefix = "/go/options",
+    visibility = ["//visibility:public"],
+)

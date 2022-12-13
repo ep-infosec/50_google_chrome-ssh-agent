@@ -1,0 +1,96 @@
+/**
+ * Copyright 2017 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+.dialog {
+  margin: 10%;
+}
+
+/* Passphrase input dialg */
+
+#passphrase {
+  width: 32em;
+}
+
+/* Add key dialog */
+
+#addName {
+  width: 32em;
+}
+
+#addKey {
+  /* PEM encoded keys look nicer in monospace */
+  font-family: monospace;
+  /* Size for entering a PEM-formatted private key */
+  height: 8em;
+  width: 40em;
+}
+
+/* Options page */
+
+#options {
+  width: 40em;
+  height: 30em;
+  margin: 1em;
+  display: inline-block;
+}
+
+#loadingMessage {
+  color: #438bfe;
+  text-align: center;
+  padding-top: 0.5em;
+}
+
+#errorMessage {
+  color: red;
+}
+
+#controlPane {
+  margin-bottom: 1em;
+}
+
+#keysTable {
+  border-collapse: collapse;
+  widtH: 100%;
+}
+
+#keysTable td {
+  border: .1em solid #ddd;
+  padding-left: .5em;
+  padding-right: .5em;
+  padding-top: .5em;
+  padding-bottom: .5em;
+}
+
+#keysData tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#keysData tr:hover {
+  background-color: #ddd;
+}
+
+#keysHeader {
+  background-color: #438bfe;
+  color: white;
+}
+
+.keyBlob {
+  font-family: monospace;
+  overflow: auto;
+  word-wrap: break-word;
+  max-width: 16em;
+  max-height: 4em;
+}

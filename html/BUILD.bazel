@@ -1,0 +1,96 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "js_library")
+load("@npm//@bazel/typescript:index.bzl", "ts_config", "ts_project")
+load("@npm//@bazel/esbuild:index.bzl", "esbuild")
+load("@rules_pkg//pkg:mappings.bzl", "pkg_filegroup", "pkg_files")
+
+# Typescript compiler inputs must be within our package. Copy it over.
+genrule(
+    name = "wasm_exec_copy",
+    srcs = ["@go_sdk//:misc/wasm/wasm_exec.js"],
+    outs = ["wasm_exec.js"],
+    cmd = "cat $(location @go_sdk//:misc/wasm/wasm_exec.js) > $@",
+)
+
+# Treat wasm_exec and types as a library.
+js_library(
+    name = "wasm_exec",
+    srcs = [
+        "wasm_exec.d.ts",
+        ":wasm_exec.js",
+    ],
+)
+
+ts_project(
+    name = "app",
+    srcs = ["app.ts"],
+    declaration = True,
+    deps = [
+        ":wasm_exec",
+        "@npm//@types/chrome",
+    ],
+)
+
+ts_project(
+    name = "background",
+    srcs = ["background.ts"],
+    declaration = True,
+    deps = [
+        ":app",
+        "@npm//@types/chrome",
+    ],
+)
+
+esbuild(
+    name = "background-bundle",
+    entry_point = "background.ts",
+    deps = [":background"],
+)
+
+ts_project(
+    name = "options",
+    srcs = ["options.ts"],
+    declaration = True,
+    deps = [
+        ":app",
+        "@npm//@types/chrome",
+    ],
+)
+
+# See https://esbuild.github.io/content-types/#typescript-caveats for additional
+# settings that we tweak in tsconfig.json. Specifically:
+#  isolatedModules = true
+#  esModuleInterop = true
+esbuild(
+    name = "options-bundle",
+    entry_point = "options.ts",
+    deps = [":options"],
+)
+
+filegroup(
+    name = "optionsui",
+    srcs = [
+        "options.html",
+        "style.css",
+        ":background-bundle.js",
+        ":background-bundle.js.map",
+        ":options-bundle.js",
+        ":options-bundle.js.map",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+pkg_files(
+    name = "pkg_files",
+    srcs = [
+        ":optionsui",
+    ],
+)
+
+pkg_filegroup(
+    name = "pkg",
+    srcs = [
+        ":pkg_files",
+    ],
+    prefix = "/html",
+    visibility = ["//visibility:public"],
+)

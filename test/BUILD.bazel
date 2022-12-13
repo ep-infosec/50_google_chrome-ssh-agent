@@ -1,0 +1,22 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_test")
+
+go_test(
+    name = "test",
+    srcs = [
+        "e2e.go",
+        "extension.go",
+    ],
+    data = [
+        "//:chrome-ssh-agent.zip",
+        "@chromedriver",
+        "@chromium",
+    ],
+    importpath = "github.com/google/chrome-ssh-agent/test",
+    deps = [
+        "//go/testutil",
+        "@com_github_tebeka_selenium//:selenium",
+        "@com_github_tebeka_selenium//chrome",
+        "@com_github_tebeka_selenium//log",
+        "@io_bazel_rules_go//go/tools/bazel",
+    ],
+)
